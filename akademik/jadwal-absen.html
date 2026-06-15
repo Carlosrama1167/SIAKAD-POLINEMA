@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SIAKAD POLINEMA | Akademik</title>
+    <link rel="icon" type="image/x-icon" href="../logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+            transition: background 0.3s, color 0.2s;
+        }
+        body.dark {
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 1rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        body.dark .sidebar {
+            background: #1e293b;
+            border-right-color: #334155;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s;
+            }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                display: none;
+            }
+            .sidebar-overlay.active { display: block; }
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        body.dark .logo-area { border-bottom-color: #334155; }
+        .logo-icon {
+            background: #1e5a7d;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+        .logo-text h2 { font-size: 1.3rem; font-weight: 700; color: #1e5a7d; }
+        body.dark .logo-text h2 { color: #2c7aa3; }
+        .logo-text p { font-size: 0.7rem; color: #475569; }
+        .search-menu {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .search-menu input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            border-radius: 2rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.8rem;
+        }
+        body.dark .search-menu input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .search-menu i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            color: #475569;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        body.dark .nav-item { color: #cbd5e1; }
+        .nav-item i { width: 24px; font-size: 1.1rem; }
+        .nav-item.active, .nav-item:hover {
+            background: #eef2ff;
+            color: #1e5a7d;
+        }
+        body.dark .nav-item.active, body.dark .nav-item:hover {
+            background: #2d3a4e;
+            color: #3b82f6;
+        }
+        .submenu-group {
+            margin-left: 1.8rem;
+            margin-top: 0.3rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .submenu-item {
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: #475569;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            outline: none;
+        }
+        body.dark .submenu-item { color: #cbd5e1; }
+        .submenu-item:hover, .submenu-item.active {
+            background: #eef2ff;
+            color: #1e5a7d;
+        }
+        body.dark .submenu-item:hover, body.dark .submenu-item.active {
+            background: #2d3a4e;
+            color: #60a5fa;
+        }
+        .submenu-icon { font-size: 0.8rem; opacity: 0.7; }
+        .chevron { margin-left: auto; transition: transform 0.2s; }
+        .chevron.rotated { transform: rotate(180deg); }
+        .nav-item.hidden, .submenu-item.hidden { display: none; }
+
+        /* MAIN */
+        .main {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-x: auto;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .left-actions { display: flex; align-items: center; gap: 1rem; }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #1e293b;
+        }
+        body.dark .hamburger { color: #f1f5f9; }
+        @media (max-width: 768px) { .hamburger { display: block; } }
+        .student-info {
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        body.dark .student-info { background: #1e293b; }
+        .student-info i { color: #1e5a7d; }
+        .right-actions { display: flex; align-items: center; gap: 0.8rem; }
+        .message-icon, .theme-toggle {
+            background: #e2e8f0;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            color: #1e293b;
+            text-decoration: none;
+        }
+        body.dark .message-icon, body.dark .theme-toggle {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        /* Jadwal */
+        .schedule-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 120px;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        body.dark .schedule-item { border-bottom-color: #334155; }
+        .course-name { font-weight: 500; }
+        .course-time, .course-room { color: #64748b; font-size: 0.8rem; }
+        @media (max-width: 700px) {
+            .schedule-item { grid-template-columns: 1fr; gap: 0.3rem; }
+            .course-time, .course-room { font-size: 0.75rem; }
+        }
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        body.dark .card { background: #1e293b; }
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .schedule-grid { display: flex; flex-direction: column; gap: 1rem; }
+        .day-card { border-left: 4px solid #1e5a7d; padding-left: 0.8rem; }
+        .day-header { font-weight: 700; font-size: 1rem; color: #1e5a7d; margin-bottom: 0.5rem; }
+        .summary-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        .summary-card {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 0.8rem;
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+        }
+        body.dark .summary-card { background: #0f172a; }
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e5a7d;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        body.dark footer { border-top-color: #334155; color: #94a3b8; }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="logo-text"><h2>SIAKAD</h2><p>Politeknik Negeri Malang</p></div>
+        </div>
+        <div class="search-menu"><i class="fas fa-search"></i><input type="text" id="menuSearch" placeholder="Cari menu..."></div>
+        <div class="nav-menu" id="navMenu">
+            <a href="../dasboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <div class="nav-item has-submenu"><i class="fas fa-id-card"></i> Profil & KTM <i class="fas fa-chevron-down chevron"></i></div>
+            <div class="submenu-group">
+                <a href="../profil-ktm/biodata.html" class="submenu-item"><span>Biodata</span><i class="fas fa-user submenu-icon"></i></a>
+                <a href="../profil-ktm/ktm.html" class="submenu-item"><span>KTM</span><i class="fas fa-id-card submenu-icon"></i></a>
+                <a href="../profil-ktm/dokumen.html" class="submenu-item"><span>Dokumen</span><i class="fas fa-file-alt submenu-icon"></i></a>
+            </div>
+            <div class="nav-item has-submenu active"><i class="fas fa-book-open"></i> Akademik <i class="fas fa-chevron-down chevron"></i></div>
+            <div class="submenu-group" id="akademikSubmenu">
+                <a href="jadwal-absen.html" class="submenu-item" data-sub="jadwal"><span>Jadwal dan Absen</span><i class="fas fa-calendar-alt submenu-icon"></i></a>
+                <a href="krs-online.html" class="submenu-item" data-sub="krs"><span>KRS Online</span><i class="fas fa-calendar-check submenu-icon"></i></a>
+                <a href="khs-nilai.html" class="submenu-item" data-sub="khs"><span>KHS dan Nilai</span><i class="fas fa-chart-line submenu-icon"></i></a>
+                <a href="lms.html" class="submenu-item" data-sub="lms"><span>LMS</span><i class="fas fa-chalkboard submenu-icon"></i></a>
+            </div>
+            <a href="../ukt.html" class="nav-item"><i class="fas fa-coins"></i> Keuangan & UKT</a>
+            <a href="../layanan-surat.html" class="nav-item"><i class="fas fa-file-signature"></i> Layanan Surat</a>
+            <a href="../kuesioner.html" class="nav-item"><i class="fas fa-clipboard-list"></i> Kuesioner</a>
+            <a href="../tingkat-akhir.html" class="nav-item"><i class="fas fa-hourglass-end"></i> Tingkat Akhir</a>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main">
+        <div class="top-bar">
+            <div class="left-actions">
+                <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="student-info"><i class="fas fa-id-card"></i><span><strong>254107020064</strong> / CARLOS F.R</span></div>
+            </div>
+            <div class="right-actions">
+                <a href="message.html" class="message-icon"><i class="fas fa-envelope"></i></a>
+                <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+
+        <div id="contentArea"></div>
+        <footer>© 2025 SIAKAD POLINEMA | Politeknik Negeri Malang</footer>
+    </main>
+</div>
+
+<script>
+    (function() {
+        // DARK MODE (Menggunakan Konsep Lampu Hidup / Lampu Mati)
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        const icon = toggleBtn.querySelector('i');
+        const saved = localStorage.getItem('theme');
+
+        // Jika user berada di mode gelap, tampilkan icon lampu menyala (fas) untuk beralih ke terang
+        if (saved === 'dark') { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; // Lampu Hidup (Solid)
+        } 
+        else if (saved === 'light') { 
+            document.body.classList.remove('dark'); 
+            icon.className = 'far fa-lightbulb'; // Lampu Mati (Outline)
+        } 
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; 
+            localStorage.setItem('theme', 'dark'); 
+        } 
+        else { 
+            document.body.classList.remove('dark');
+            icon.className = 'far fa-lightbulb';
+            localStorage.setItem('theme', 'light'); 
+        }
+
+        // Aksi ketika tombol diklik
+        toggleBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark')) { 
+                // Berubah ke Mode Terang
+                document.body.classList.remove('dark'); 
+                icon.className = 'far fa-lightbulb'; // Sakelar dimatikan -> Lampu Mati (Outline)
+                localStorage.setItem('theme', 'light'); 
+            } else { 
+                // Berubah ke Mode Gelap
+                document.body.classList.add('dark'); 
+                icon.className = 'fas fa-lightbulb'; // Sakelar dinyalakan -> Lampu Hidup (Solid)
+                localStorage.setItem('theme', 'dark'); 
+            }
+        });
+
+        // MOBILE SIDEBAR
+        const hamburger = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); }
+        hamburger.addEventListener('click', () => { if (sidebar.classList.contains('open')) closeSidebar(); else openSidebar(); });
+        overlay.addEventListener('click', closeSidebar);
+        window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+        // SEARCH MENU
+        const searchInput = document.getElementById('menuSearch');
+        const allItems = document.querySelectorAll('.nav-item, .submenu-item');
+        searchInput.addEventListener('input', () => {
+            const kw = searchInput.value.toLowerCase().trim();
+            allItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (kw === '' || text.includes(kw)) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
+        });
+
+        // ACCORDION UNTUK SEMUA SUBMENU (Otomatis terbuka jika ada item aktif di dalamnya)
+        document.querySelectorAll('.has-submenu').forEach(parent => {
+            const submenu = parent.nextElementSibling;
+            const chevron = parent.querySelector('.chevron');
+            if (!submenu || !submenu.classList.contains('submenu-group') || !chevron) return;
+            
+            // 1. Logika Deteksi: Cek apakah menu induk atau submenunya sedang aktif (.active)
+            const isParentActive = parent.classList.contains('active');
+            const hasActiveChild = submenu.querySelector('.submenu-item.active');
+            
+            // Jika menu induk AKTIF (seperti menu Akademik Anda) atau ada anak yang aktif, biarkan TERBUKA
+            if (isParentActive || hasActiveChild) {
+                submenu.style.display = 'flex';
+                chevron.classList.add('rotated');
+            } else {
+                // Jika tidak aktif (seperti menu Profil & KTM), maka disembunyikan (tertutup)
+                submenu.style.display = 'none';
+                chevron.classList.remove('rotated');
+            }
+            
+            // 2. Logika ketika menu induk diklik manual oleh pengguna
+            parent.addEventListener('click', (e) => {
+                if (e.target.closest('.submenu-item')) return;
+                
+                if (submenu.style.display === 'flex') {
+                    submenu.style.display = 'none';
+                    chevron.classList.remove('rotated');
+                } else {
+                    submenu.style.display = 'flex';
+                    chevron.classList.add('rotated');
+                }
+            });
+        });
+
+        // AKTIFKAN MENU AKADEMIK DI SIDEBAR
+        const akademikNav = document.querySelector('.nav-item.has-submenu.active');
+        if (akademikNav) akademikNav.classList.add('active');
+
+        // ========== KONTEN JADWAL (tetap di halaman ini) ==========
+        function renderJadwalAbsen() {
+            return `
+                <div class="card">
+                    <div class="section-title"><i class="fas fa-calendar-alt"></i> Jadwal Perkuliahan (Senin - Jumat)</div>
+                    <div class="schedule-grid">
+                        <div class="day-card"><div class="day-header"><i class="fas fa-sun"></i> Senin</div>
+                            <div class="schedule-item"><span class="course-name">Pemrograman Web</span><span class="course-time">07:30 - 10:00</span><span class="course-room">Lab. Komputer 2</span></div>
+                            <div class="schedule-item"><span class="course-name">Basis Data</span><span class="course-time">10:15 - 12:45</span><span class="course-room">Lab. Basis Data</span></div>
+                            <div class="schedule-item"><span class="course-name">Agama</span><span class="course-time">13:30 - 15:00</span><span class="course-room">Ruang Teori 5</span></div>
+                        </div>
+                        <div class="day-card"><div class="day-header"><i class="fas fa-mars"></i> Selasa</div>
+                            <div class="schedule-item"><span class="course-name">Rekayasa Perangkat Lunak</span><span class="course-time">07:30 - 10:00</span><span class="course-room">Ruang 3.02</span></div>
+                            <div class="schedule-item"><span class="course-name">Algoritma dan Struktur Data</span><span class="course-time">10:15 - 12:45</span><span class="course-room">Lab. Komputer 1</span></div>
+                        </div>
+                        <div class="day-card"><div class="day-header"><i class="fas fa-mercury"></i> Rabu</div>
+                            <div class="schedule-item"><span class="course-name">Sistem Operasi</span><span class="course-time">07:30 - 10:00</span><span class="course-room">Ruang 2.01</span></div>
+                            <div class="schedule-item"><span class="course-name">Jaringan Komputer</span><span class="course-time">10:15 - 12:45</span><span class="course-room">Lab. Jaringan</span></div>
+                            <div class="schedule-item"><span class="course-name">Praktikum Jaringan</span><span class="course-time">13:30 - 16:00</span><span class="course-room">Lab. Jaringan</span></div>
+                        </div>
+                        <div class="day-card"><div class="day-header"><i class="fas fa-venus"></i> Kamis</div>
+                            <div class="schedule-item"><span class="course-name">Matematika Diskrit</span><span class="course-time">07:30 - 10:00</span><span class="course-room">Ruang 1.03</span></div>
+                            <div class="schedule-item"><span class="course-name">Manajemen Proyek TI</span><span class="course-time">10:15 - 12:45</span><span class="course-room">Ruang 4.02</span></div>
+                        </div>
+                        <div class="day-card"><div class="day-header"><i class="fas fa-star-of-life"></i> Jumat</div>
+                            <div class="schedule-item"><span class="course-name">Kewirausahaan</span><span class="course-time">07:30 - 10:00</span><span class="course-room">Ruang 2.04</span></div>
+                            <div class="schedule-item"><span class="course-name">Bahasa Inggris Teknik</span><span class="course-time">10:15 - 12:00</span><span class="course-room">Ruang 3.01</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="section-title"><i class="fas fa-fingerprint"></i> Ringkasan Absensi</div>
+                    <div class="summary-grid">
+                        <div class="summary-card"><div class="summary-value">18</div><div>Total Hadir</div></div>
+                        <div class="summary-card"><div class="summary-value">2</div><div>Alpha</div></div>
+                        <div class="summary-card"><div class="summary-value">0 jam</div><div>Tanggungan Kompen</div><div style="font-size:0.7rem;">(Bebas Kompen)</div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const contentArea = document.getElementById('contentArea');
+        const submenuItems = document.querySelectorAll('#akademikSubmenu .submenu-item');
+
+        function setActiveSub(subId) {
+            submenuItems.forEach(item => {
+                if (item.getAttribute('data-sub') === subId) item.classList.add('active');
+                else item.classList.remove('active');
+            });
+
+            if (subId === 'jadwal') {
+                contentArea.innerHTML = renderJadwalAbsen();
+            } 
+            else if (subId === 'krs') {
+                // ALIHKAN KE HALAMAN KRS ONLINE
+                window.location.href = 'krs-online.html';
+            } 
+            else if (subId === 'khs') {
+                // ALIHKAN KE HALAMAN KHS DAN NILAI
+                window.location.href = 'khs-nilai.html';
+            }
+        }
+
+        submenuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const sub = item.getAttribute('data-sub');
+                if (sub) setActiveSub(sub);
+                if (window.innerWidth <= 768) closeSidebar();
+            });
+        });
+
+        // Set default: tampilkan jadwal
+        setActiveSub('jadwal');
+    })();
+</script>
+</body>
+</html>

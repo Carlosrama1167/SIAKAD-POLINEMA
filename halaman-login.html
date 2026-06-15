@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Login | SIAKAD POLINEMA</title>
+    <link rel="icon" type="image/x-icon" href="logo.png">
+    <!-- Google Fonts & Font Awesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #eef2f8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        /* Grid 2 kolom: kiri (gambar) lebih besar */
+        .login-wrapper {
+            max-width: 1400px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;  /* gambar lebih besar */
+            background: #ffffff;
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* KIRI: CAROUSEL FOTO KAMPUS (LEBIH BESAR) */
+        .campus-carousel {
+            position: relative;
+            background: linear-gradient(145deg, #0f2b3d, #1b4a6e);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(6px);
+            border-radius: 1rem;
+            padding: 0.8rem 1rem;
+            color: white;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .carousel-caption h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
+
+        .carousel-caption p {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            z-index: 3;
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .dot.active {
+            background-color: #ffb347;
+            transform: scale(1.2);
+        }
+
+        /* KANAN: FORM LOGIN (LEBIH KECIL) */
+        .login-form {
+            padding: 2.5rem 2rem;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .brand-header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(115deg, #1e5a7d, #2c7aa3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .brand-header p {
+            font-size: 0.8rem;
+            color: #5f7f9e;
+            margin-top: 0.2rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            margin-bottom: 0.3rem;
+        }
+
+        .subtitle {
+            color: #5f7f9e;
+            font-size: 0.85rem;
+            margin-bottom: 1.8rem;
+            border-left: 3px solid #ffb347;
+            padding-left: 0.75rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+            color: #1e3b4f;
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8aaec0;
+            font-size: 1.1rem;
+        }
+
+        .input-icon input {
+            width: 100%;
+            padding: 0.9rem 1rem 0.9rem 2.7rem;
+            font-size: 0.95rem;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 1.2rem;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .input-icon input:focus {
+            outline: none;
+            border-color: #1e5a7d;
+            box-shadow: 0 0 0 3px rgba(30, 90, 125, 0.15);
+        }
+
+        .checkbox-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.8rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #2c4b66;
+        }
+
+        .checkbox-label input {
+            accent-color: #1e5a7d;
+        }
+
+        .forgot-link {
+            font-size: 0.8rem;
+            color: #1e5a7d;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+            color: #ff9f4a;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(100deg, #1e5a7d, #2c7aa3);
+            border: none;
+            padding: 0.9rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(100deg, #134a66, #236f96);
+        }
+
+        .demo-hint {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1.2rem;
+            color: #8ba0b5;
+            background: #f4f9fe;
+            padding: 0.5rem;
+            border-radius: 1rem;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Responsive: di layar kecil tumpuk */
+        @media (max-width: 900px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .campus-carousel {
+                min-height: 320px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-form {
+                padding: 1.5rem;
+            }
+            .welcome-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-wrapper">
+    <!-- KIRI: CAROUSEL FOTO KAMPUS (LEBIH BESAR) -->
+    <div class="campus-carousel">
+        <div class="carousel-container" id="carouselContainer">
+            <!-- slides akan diisi JS -->
+        </div>
+        <div class="carousel-caption" id="carouselCaption">
+            <h3>Politeknik Negeri Malang</h3>
+            <p>Kampus Vokasi Unggulan Berstandar Internasional</p>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- KANAN: FORM LOGIN (LEBIH KECIL) -->
+    <div class="login-form">
+        <div class="brand-header">
+            <h1>SIAKAD POLINEMA</h1>
+            <p>Sistem Informasi Akademik</p>
+        </div>
+        <h2 class="welcome-title">Selamat Datang</h2>
+        <div class="subtitle">Masuk menggunakan akun SIAKAD Anda</div>
+
+        <div id="errorBox" class="error-message">
+            <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+        </div>
+
+        <form id="loginForm" action="#" method="post">
+            <div class="input-group">
+                <label>Username / NIM</label>
+                <div class="input-icon">
+                    <i class="fas fa-id-badge"></i>
+                    <input type="text" id="username" placeholder="Contoh: 254107020064" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-icon">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="password" placeholder="Masukkan password" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="checkbox-row">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="showPassword">
+                    <span><i class="far fa-eye"></i> Tampilkan Password</span>
+                </label>
+                <a href="#" id="lupaPassword" class="forgot-link"><i class="fas fa-question-circle"></i> Lupa Password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> LOGIN
+            </button>
+            <div class="demo-hint">
+                <i class="fas fa-laptop-code"></i> Demo: gunakan NIM dan password apapun
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ========== DATA GAMBAR KAMPUS (CAROUSEL) ==========
+        const slidesData = [
+            {
+                img: "https://picsum.photos/id/104/1000/700",
+                title: "Gedung Kuliah Terpadu",
+                desc: "Fasilitas modern untuk pembelajaran interaktif"
+            },
+            {
+                img: "https://picsum.photos/id/15/1000/700",
+                title: "Area Hijau Kampus",
+                desc: "Lingkungan asri dan nyaman untuk belajar"
+            },
+            {
+                img: "https://picsum.photos/id/20/1000/700",
+                title: "Laboratorium Technopark",
+                desc: "Pusat riset dan inovasi vokasi"
+            },
+            {
+                img: "https://picsum.photos/id/26/1000/700",
+                title: "Student Center",
+                desc: "Tempat berkumpul dan berkreasi mahasiswa"
+            },
+            {
+                img: "https://picsum.photos/id/28/1000/700",
+                title: "Sport & Kegiatan",
+                desc: "Prestasi non-akademik dan fasilitas olahraga"
+            }
+        ];
+
+        let currentIndex = 0;
+        let slideInterval;
+        const container = document.getElementById('carouselContainer');
+        const dotsContainer = document.getElementById('carouselDots');
+        const captionDiv = document.getElementById('carouselCaption');
+
+        // Build carousel slides & dots
+        function buildCarousel() {
+            container.innerHTML = '';
+            dotsContainer.innerHTML = '';
+            slidesData.forEach((slide, idx) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = `carousel-slide ${idx === currentIndex ? 'active' : ''}`;
+                slideDiv.style.backgroundImage = `url('${slide.img}')`;
+                container.appendChild(slideDiv);
+
+                const dot = document.createElement('div');
+                dot.className = `dot ${idx === currentIndex ? 'active' : ''}`;
+                dot.addEventListener('click', () => goToSlide(idx));
+                dotsContainer.appendChild(dot);
+            });
+            updateCaption();
+        }
+
+        function updateCaption() {
+            const data = slidesData[currentIndex];
+            captionDiv.innerHTML = `<h3>${data.title}</h3><p>${data.desc}</p>`;
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const dots = document.querySelectorAll('.dot');
+            if (!slides.length) return;
+            slides[currentIndex].classList.remove('active');
+            dots[currentIndex].classList.remove('active');
+            currentIndex = (index + slidesData.length) % slidesData.length;
+            slides[currentIndex].classList.add('active');
+            dots[currentIndex].classList.add('active');
+            updateCaption();
+        }
+
+        function nextSlide() {
+            goToSlide(currentIndex + 1);
+        }
+
+        function startAutoSlide() {
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        buildCarousel();
+        startAutoSlide();
+
+        // Pause auto slide saat hover di area carousel
+        const carouselArea = document.querySelector('.campus-carousel');
+        carouselArea.addEventListener('mouseenter', () => clearInterval(slideInterval));
+        carouselArea.addEventListener('mouseleave', startAutoSlide);
+
+        // ========== LOGIN HANDLER ==========
+        const form = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const showPassCheck = document.getElementById('showPassword');
+        const lupaLink = document.getElementById('lupaPassword');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
+
+        // Toggle password visibility
+        showPassCheck.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+
+        // Lupa password simulasi
+        lupaLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert("🔐 Lupa Password?\nSilakan hubungi Bagian Administrasi Akademik Polinema atau helpdesk SIAKAD.\n\n(Demo integrasi)");
+        });
+
+        function showError(msg) {
+            errorText.innerText = msg;
+            errorBox.style.display = 'flex';
+            setTimeout(() => {
+                errorBox.style.display = 'none';
+            }, 3500);
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+
+            if (username === "") {
+                showError("Username / NIM tidak boleh kosong.");
+                usernameInput.focus();
+                return;
+            }
+            if (password === "") {
+                showError("Password tidak boleh kosong.");
+                passwordInput.focus();
+                return;
+            }
+
+            // Simulasi login sukses
+            localStorage.setItem('siakad_logged_in', 'true');
+            localStorage.setItem('siakad_nim', username);
+            localStorage.setItem('siakad_nama', 'CARLOS F.R');
+
+            // Redirect ke halaman beranda.html (dashboard)
+            window.location.href = 'beranda.html';
+        });
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SIAKAD POLINEMA | Kuesioner</title>
+    <link rel="icon" type="image/x-icon" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+            transition: background 0.3s, color 0.2s;
+        }
+
+        body.dark {
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 1rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        body.dark .sidebar {
+            background: #1e293b;
+            border-right-color: #334155;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                display: none;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark .logo-area {
+            border-bottom-color: #334155;
+        }
+
+        .logo-icon {
+            background: #1e5a7d;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e5a7d;
+        }
+
+        body.dark .logo-text h2 {
+            color: #2c7aa3;
+        }
+
+        .logo-text p {
+            font-size: 0.7rem;
+            color: #475569;
+        }
+
+        body.dark .logo-text p {
+            color: #94a3b8;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            color: #475569;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        body.dark .nav-item {
+            color: #cbd5e1;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.1rem;
+        }
+
+        .nav-item.active {
+            background: #eef2ff;
+            color: #1e5a7d;
+        }
+
+        body.dark .nav-item.active {
+            background: #2d3a4e;
+            color: #3b82f6;
+        }
+
+        .nav-item:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        body.dark .nav-item:hover:not(.active) {
+            background: #334155;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-x: auto;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .left-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #1e293b;
+            padding: 0.5rem;
+        }
+
+        body.dark .hamburger {
+            color: #f1f5f9;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+        }
+
+        .student-info {
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        body.dark .student-info {
+            background: #1e293b;
+        }
+
+        .student-info i {
+            font-size: 1.2rem;
+            color: #1e5a7d;
+        }
+
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .message-icon,
+        .theme-toggle {
+            background: #e2e8f0;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        body.dark .message-icon,
+        body.dark .theme-toggle {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        /* KONTEN KUESIONER */
+        .kuesioner-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #1e5a7d;
+            border-left: 5px solid #ffb347;
+            padding-left: 1rem;
+        }
+
+        body.dark .page-title {
+            color: #60a5fa;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        body.dark .card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        .progress-section {
+            margin-bottom: 1rem;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar-bg {
+            background: #e2e8f0;
+            border-radius: 1rem;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        body.dark .progress-bar-bg {
+            background: #334155;
+        }
+
+        .progress-fill {
+            background: #1e5a7d;
+            width: 0%;
+            height: 100%;
+            border-radius: 1rem;
+            transition: width 0.3s;
+        }
+
+        .survey-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark .survey-item {
+            border-bottom-color: #334155;
+        }
+
+        .survey-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .survey-meta {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 0.6rem;
+        }
+
+        body.dark .survey-meta {
+            color: #94a3b8;
+        }
+
+        .status-selesai {
+            background: #10b98120;
+            color: #10b981;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .btn-mulai {
+            background: #1e5a7d;
+            color: white;
+            border: none;
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-mulai:hover {
+            background: #2c7aa3;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        body.dark footer {
+            border-top-color: #334155;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .survey-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Search menu */
+        .search-menu {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .search-menu input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            border-radius: 2rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        body.dark .search-menu input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+
+        .search-menu i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        /* Submenu */
+        .submenu-group {
+            margin-left: 1.8rem;
+            margin-top: 0.3rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .submenu-item {
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: #475569;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+        }
+
+        body.dark .submenu-item {
+            color: #cbd5e1;
+        }
+
+        .submenu-item:hover,
+        .submenu-item.active {
+            background: #eef2ff;
+            color: #1e5a7d;
+        }
+
+        body.dark .submenu-item:hover,
+        body.dark .submenu-item.active {
+            background: #2d3a4e;
+            color: #60a5fa;
+        }
+
+        .submenu-icon {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .chevron {
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="logo-text">
+                <h2>SIAKAD</h2>
+                <p>Politeknik Negeri Malang</p>
+            </div>
+        </div>
+        <div class="search-menu">
+            <i class="fas fa-search"></i>
+            <input type="text" id="menuSearch" placeholder="Cari menu...">
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <a href="dasboard.html" class="nav-item" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+
+            <!-- Profil & KTM (dengan submenu) -->
+            <div class="nav-item has-submenu" data-page="profil">
+                <i class="fas fa-id-card"></i> Profil & KTM
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+            <div class="submenu-group">
+                <a href="profil-ktm/biodata.html" class="submenu-item"><span>Biodata</span><i class="fas fa-user submenu-icon"></i></a>
+                <a href="profil-ktm/ktm.html" class="submenu-item active"><span>KTM</span><i class="fas fa-id-card submenu-icon"></i></a>
+                <a href="profil-ktm/dokumen.html" class="submenu-item"><span>Dokumen</span><i class="fas fa-file-alt submenu-icon"></i></a>
+            </div>
+
+            <!-- Akademik (dengan submenu) -->
+            <div class="nav-item has-submenu" data-page="akademik">
+                <i class="fas fa-book-open"></i> Akademik
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+           <div class="submenu-group">
+                <a href="akademik/jadwal-absen.html" class="submenu-item"><span>Jadwal dan Absen</span><i class="fas fa-calendar-alt submenu-icon"></i></a>
+                <a href="akademik/krs-online.html" class="submenu-item"><span>KRS Online</span><i class="fas fa-calendar-check submenu-icon"></i></a>
+                <a href="akademik/khs-nilai.html" class="submenu-item"><span>KHS dan Nilai</span><i class="fas fa-chart-line submenu-icon"></i></a>
+                <a href="akademik/lms.html" class="submenu-item active"><span>LMS</span><i class="fas fa-chalkboard submenu-icon"></i></a>
+            </div>
+
+            <!-- Menu lainnya -->
+            <a href="ukt.html" class="nav-item" data-page="keuangan"><i class="fas fa-coins"></i> Keuangan & UKT</a>
+            <a href="layanan-surat.html" class="nav-item" data-page="surat"><i class="fas fa-file-signature"></i> Layanan Surat</a>
+            <a href="kuesioner.html" class="nav-item" data-page="kuesioner"><i class="fas fa-clipboard-list"></i> Kuesioner</a>
+            <a href="tingkat-akhir.html" class="nav-item" data-page="tingkat"><i class="fas fa-hourglass-end"></i> Tingkat Akhir</a>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="left-actions">
+                <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="student-info">
+                    <i class="fas fa-id-card"></i>
+                    <span><strong>254107020064</strong> / CARLOS F.R</span>
+                </div>
+            </div>
+            <div class="right-actions">
+                <a href="message.html" class="message-icon"><i class="fas fa-envelope"></i></a>
+                <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+
+        <div class="kuesioner-container">
+            <div class="page-title">PUSAT KUESIONER & SURVEI KAMPUS</div>
+
+            <div class="card">
+                <div class="progress-section">
+                    <div class="progress-label">
+                        <span>PROGRES SURVEI SEMESTER INI</span>
+                        <span id="progressPercent">65%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" id="progressFill" style="width: 65%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="font-weight: 700; margin-bottom: 1rem;">DAFTAR SURVEI YANG TERSEDIA</div>
+                <div id="surveyList">
+                    <div class="survey-item" data-survey-id="1">
+                        <div class="survey-title">
+                            <i class="far fa-square"></i>
+                            <span>KUESIONER EVALUASI FASILITAS & SARANA PRASARANA 2026</span>
+                        </div>
+                        <div class="survey-meta">BATAS PENGISIAN: 30 JUNI 2026 | ESTIMASI: 3 MENIT</div>
+                        <button class="btn-mulai" onclick="startSurvey(1)">MULAI ISI</button>
+                    </div>
+                    <div class="survey-item" data-survey-id="2">
+                        <div class="survey-title">
+                            <i class="far fa-check-square" style="color: #10b981;"></i>
+                            <span>SURVEI KEPUASAN LAYANAN KANTIN PUSAT POLINEMA</span>
+                        </div>
+                        <div class="survey-meta">STATUS: <span class="status-selesai">SELESAI DIISI (TERIMA KASIH ATAS PARTISIPASI)</span></div>
+                        <button class="btn-mulai" disabled style="opacity:0.6; cursor:not-allowed;">SUDAH DIISI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer>© 2025 SIAKAD POLINEMA | Politeknik Negeri Malang</footer>
+    </main>
+</div>
+
+<script>
+    (function() {
+        // ========== SIDEBAR MOBILE ==========
+        const hamburger = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+
+        hamburger.addEventListener('click', () => {
+            if (sidebar.classList.contains('open')) closeSidebar();
+            else openSidebar();
+        });
+        overlay.addEventListener('click', closeSidebar);
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) closeSidebar();
+        });
+
+        // DARK MODE (Menggunakan Konsep Lampu Hidup / Lampu Mati)
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        const icon = toggleBtn.querySelector('i');
+        const saved = localStorage.getItem('theme');
+
+        // Jika user berada di mode gelap, tampilkan icon lampu menyala (fas) untuk beralih ke terang
+        if (saved === 'dark') { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; // Lampu Hidup (Solid)
+        } 
+        else if (saved === 'light') { 
+            document.body.classList.remove('dark'); 
+            icon.className = 'far fa-lightbulb'; // Lampu Mati (Outline)
+        } 
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; 
+            localStorage.setItem('theme', 'dark'); 
+        } 
+        else { 
+            document.body.classList.remove('dark');
+            icon.className = 'far fa-lightbulb';
+            localStorage.setItem('theme', 'light'); 
+        }
+
+        // Aksi ketika tombol diklik
+        toggleBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark')) { 
+                // Berubah ke Mode Terang
+                document.body.classList.remove('dark'); 
+                icon.className = 'far fa-lightbulb'; // Sakelar dimatikan -> Lampu Mati (Outline)
+                localStorage.setItem('theme', 'light'); 
+            } else { 
+                // Berubah ke Mode Gelap
+                document.body.classList.add('dark'); 
+                icon.className = 'fas fa-lightbulb'; // Sakelar dinyalakan -> Lampu Hidup (Solid)
+                localStorage.setItem('theme', 'dark'); 
+            }
+        });
+
+        // ========== SEARCH MENU ==========
+        const searchInput = document.getElementById('menuSearch');
+        const navItems = document.querySelectorAll('.nav-item');
+        function filterMenu() {
+            const keyword = searchInput.value.toLowerCase().trim();
+            navItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (keyword === '' || text.includes(keyword)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+        searchInput.addEventListener('input', filterMenu);
+
+        // ACCORDION UNTUK SEMUA SUBMENU (Sekarang tertutup secara default)
+        document.querySelectorAll('.has-submenu').forEach(parent => {
+            const submenu = parent.nextElementSibling;
+            const chevron = parent.querySelector('.chevron');
+            if (!submenu || !submenu.classList.contains('submenu-group') || !chevron) return;
+            
+            // MENGUBAH DEFAULT: Semula 'flex' (terbuka) diubah menjadi 'none' (tertutup)
+            submenu.style.display = 'none';
+            chevron.classList.remove('rotated');
+            
+            parent.addEventListener('click', (e) => {
+                if (e.target.closest('.submenu-item')) return;
+                
+                // Memeriksa status apakah sedang tertutup atau terbuka
+                if (submenu.style.display === 'flex') {
+                    submenu.style.display = 'none';
+                    chevron.classList.remove('rotated');
+                } else {
+                    submenu.style.display = 'flex';
+                    chevron.classList.add('rotated');
+                }
+            });
+        });
+
+        // ========== FUNGSI SURVEY & PROGRES ==========
+        let surveys = [
+            { id: 1, completed: false, name: "KUESIONER EVALUASI FASILITAS & SARANA PRASARANA 2026" },
+            { id: 2, completed: true, name: "SURVEI KEPUASAN LAYANAN KANTIN PUSAT POLINEMA" }
+        ];
+
+        function updateProgress() {
+            const total = surveys.length;
+            const completedCount = surveys.filter(s => s.completed).length;
+            const percent = Math.round((completedCount / total) * 100);
+            document.getElementById('progressPercent').innerText = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        window.startSurvey = function(surveyId) {
+            const survey = surveys.find(s => s.id === surveyId);
+            if (!survey || survey.completed) {
+                alert("Survei ini sudah selesai diisi. Terima kasih!");
+                return;
+            }
+            const confirmMsg = `Anda akan mengisi survei: ${survey.name}\n\nTekan OK untuk melanjutkan (demo).`;
+            if (confirm(confirmMsg)) {
+                survey.completed = true;
+                const surveyDiv = document.querySelector(`.survey-item[data-survey-id="${surveyId}"]`);
+                if (surveyDiv) {
+                    const titleDiv = surveyDiv.querySelector('.survey-title');
+                    if (titleDiv) {
+                        titleDiv.innerHTML = `<i class="fas fa-check-square" style="color: #10b981;"></i> <span>${survey.name}</span>`;
+                    }
+                    const metaDiv = surveyDiv.querySelector('.survey-meta');
+                    if (metaDiv) {
+                        metaDiv.innerHTML = `STATUS: <span class="status-selesai">SELESAI DIISI (TERIMA KASIH ATAS PARTISIPASI)</span>`;
+                    }
+                    const btn = surveyDiv.querySelector('.btn-mulai');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.6';
+                        btn.style.cursor = 'not-allowed';
+                        btn.innerText = 'SUDAH DIISI';
+                    }
+                }
+                updateProgress();
+                alert("Terima kasih telah mengisi survei!");
+            }
+        };
+
+        updateProgress();
+
+        // ========== SET ACTIVE MENU BERDASARKAN URL ==========
+        const currentPage = window.location.pathname.split('/').pop();
+        document.querySelectorAll('.nav-item, .submenu-item').forEach(el => {
+            el.classList.remove('active');
+        });
+        const activeLink = document.querySelector(`.nav-item[href="${currentPage}"], .submenu-item[href="${currentPage}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+            if (activeLink.classList.contains('submenu-item')) {
+                const parentSubmenu = activeLink.closest('.submenu-group');
+                if (parentSubmenu) {
+                    parentSubmenu.style.display = 'flex';
+                    const parentItem = parentSubmenu.previousElementSibling;
+                    if (parentItem && parentItem.classList.contains('has-submenu')) {
+                        const chevron = parentItem.querySelector('.chevron');
+                        if (chevron) chevron.classList.add('rotated');
+                    }
+                }
+            }
+        }
+        if (!activeLink && currentPage === 'dashboard.html') {
+            const dashLink = document.querySelector('.nav-item[href="dashboard.html"]');
+            if (dashLink) dashLink.classList.add('active');
+        }
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SIAKAD POLINEMA | Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="logo.png">
+    <!-- Google Fonts & Font Awesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f7fc;
+            color: #1e293b;
+            transition: background 0.3s, color 0.2s;
+        }
+
+        body.dark {
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+
+        /* Layout utama */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 280px;
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            padding: 1.5rem 1rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: background 0.3s, border 0.3s, transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+        }
+
+        body.dark .sidebar {
+            background: #1e293b;
+            border-right-color: #334155;
+        }
+
+        /* Mobile: sidebar disembunyikan */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            /* overlay */
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+                display: none;
+            }
+            .sidebar-overlay.active {
+                display: block;
+            }
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark .logo-area {
+            border-bottom-color: #334155;
+        }
+
+        .logo-icon {
+            background: #1e5a7d;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .logo-text h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e5a7d;
+        }
+
+        body.dark .logo-text h2 {
+            color: #2c7aa3;
+        }
+
+        .logo-text p {
+            font-size: 0.7rem;
+            color: #475569;
+        }
+
+        body.dark .logo-text p {
+            color: #94a3b8;
+        }
+
+        /* Search box di sidebar */
+        .search-menu {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .search-menu input {
+            width: 100%;
+            padding: 0.6rem 1rem 0.6rem 2.2rem;
+            border-radius: 2rem;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+        body.dark .search-menu input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .search-menu i {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            color: #475569;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        body.dark .nav-item {
+            color: #cbd5e1;
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.1rem;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            background: #eef2ff;
+            color: #1e5a7d;
+        }
+
+        body.dark .nav-item.active, body.dark .nav-item:hover {
+            background: #2d3a4e;
+            color: #3b82f6;
+        }
+
+        /* sembunyikan menu yang tidak cocok saat search */
+        .nav-item.hidden {
+            display: none;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-x: auto;
+        }
+
+        /* Top bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .left-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #1e293b;
+        }
+
+        body.dark .hamburger {
+            color: #f1f5f9;
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+        }
+
+        .student-info {
+            background: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        body.dark .student-info {
+            background: #1e293b;
+            box-shadow: none;
+        }
+
+        .student-info i {
+            font-size: 1.2rem;
+            color: #1e5a7d;
+        }
+
+        .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .message-icon {
+            background: #e2e8f0;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            color: #1e293b;
+            text-decoration: none;
+        }
+
+        body.dark .message-icon {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        .theme-toggle {
+            background: #e2e8f0;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.2s;
+            color: #1e293b;
+        }
+
+        body.dark .theme-toggle {
+            background: #334155;
+            color: #f1f5f9;
+        }
+
+        /* Welcome Card */
+        .welcome-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid #1e5a7d;
+        }
+
+        body.dark .welcome-card {
+            background: #1e293b;
+        }
+
+        .welcome-card h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .welcome-card p {
+            margin-top: 0.3rem;
+            color: #475569;
+        }
+
+        body.dark .welcome-card p {
+            color: #94a3b8;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        body.dark .metric-card {
+            background: #1e293b;
+        }
+
+        .metric-info h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0.3rem;
+        }
+
+        body.dark .metric-info h4 {
+            color: #94a3b8;
+        }
+
+        .metric-info .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e5a7d;
+        }
+
+        body.dark .metric-info .value {
+            color: #3b82f6;
+        }
+
+        .metric-icon {
+            font-size: 2rem;
+            color: #cbd5e1;
+        }
+
+        /* Aksi Cepat */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1rem;
+            text-align: center;
+            transition: 0.2s;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark .action-card {
+            background: #1e293b;
+        }
+
+        .action-card:hover {
+            transform: translateY(-3px);
+            background: #f8fafc;
+        }
+
+        body.dark .action-card:hover {
+            background: #334155;
+        }
+
+        .action-card i {
+            font-size: 2rem;
+            color: #1e5a7d;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .action-card p {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        body.dark .action-card p {
+            color: #94a3b8;
+        }
+
+        /* Two column layout for jadwal & pengumuman */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 1.2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark .card {
+            background: #1e293b;
+        }
+
+        .card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .schedule-item, .announcement-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark .schedule-item, body.dark .announcement-item {
+            border-bottom-color: #334155;
+        }
+
+        .schedule-time {
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #1e5a7d;
+        }
+
+        .schedule-course {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .schedule-room {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .announcement-date {
+            font-size: 0.7rem;
+            color: #1e5a7d;
+            font-weight: 600;
+        }
+
+        .announcement-title {
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+        }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #1e5a7d;
+            font-weight: 500;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        body.dark .btn-link {
+            color: #60a5fa;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        body.dark footer {
+            border-top-color: #334155;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 900px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .action-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .main {
+                padding: 1rem;
+            }
+            .student-info span {
+                font-size: 0.8rem;
+            }
+        }
+        /* Container submenu (membungkus ketiga item) */
+        .submenu-group {
+            margin-left: 1.8rem;        /* menjorok ke dalam dari menu induk */
+            margin-top: 0.3rem;
+            margin-bottom: 0.3rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        /* Setiap item submenu */
+        .submenu-item {
+            padding: 0.5rem 0.8rem;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            color: #475569;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+        }
+
+        /* Warna teks submenu saat dark mode */
+        body.dark .submenu-item {
+            color: #cbd5e1;
+        }
+
+        /* Hover dan active state submenu */
+        .submenu-item:hover,
+        .submenu-item.active {
+            background: #eef2ff;
+            color: #1e5a7d;
+        }
+
+        /* Dark mode hover/active */
+        body.dark .submenu-item:hover,
+        body.dark .submenu-item.active {
+            background: #2d3a4e;
+            color: #60a5fa;
+        }
+
+        /* Ikon kecil di sebelah kanan submenu (calendar, check, chart) */
+        .submenu-icon {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Ikon chevron (panah) pada menu induk Akademik */
+        .chevron {
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+    <div class="logo-area">
+        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="logo-text">
+            <h2>SIAKAD</h2>
+            <p>Politeknik Negeri Malang</p>
+        </div>
+    </div>
+    <div class="search-menu">
+        <i class="fas fa-search"></i>
+        <input type="text" id="menuSearch" placeholder="Cari menu...">
+    </div>
+    <div class="nav-menu" id="navMenu">
+        <!-- Dashboard (link) -->
+        <a href="dasboard.html" class="nav-item" data-page="dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+
+        <!-- Menu Profil & KTM (dengan submenu) -->
+        <div class="nav-item has-submenu" data-page="profil" id="profilParent">
+            <i class="fas fa-id-card"></i> Profil & KTM
+            <i class="fas fa-chevron-down chevron" id="profilChevron"></i>
+        </div>
+        <div class="submenu-group" id="profilSubmenu">
+            <a href="profil-ktm/biodata.html" class="submenu-item">
+                <span>Biodata</span>
+                <i class="fas fa-user submenu-icon"></i>
+            </a>
+            <a href="profil-ktm/ktm.html" class="submenu-item">
+                <span>KTM</span>
+                <i class="fas fa-id-card submenu-icon"></i>
+            </a>
+            <a href="profil-ktm/dokumen.html" class="submenu-item">
+                <span>Dokumen</span>
+                <i class="fas fa-file-alt submenu-icon"></i>
+            </a>
+        </div>
+
+        <!-- Menu Akademik (dengan submenu) -->
+        <div class="nav-item has-submenu" data-page="akademik" id="akademikParent">
+            <i class="fas fa-book-open"></i> Akademik
+            <i class="fas fa-chevron-down chevron" id="akademikChevron"></i>
+        </div>
+        <div class="submenu-group" id="akademikSubmenu">
+            <a href="akademik/jadwal-absen.html" class="submenu-item">
+                <span>Jadwal dan Absen</span>
+                <i class="fas fa-calendar-alt submenu-icon"></i>
+            </a>
+            <a href="akademik/krs-online.html" class="submenu-item">
+                <span>KRS Online</span>
+                <i class="fas fa-calendar-check submenu-icon"></i>
+            </a>
+            <a href="akademik/khs-nilai.html" class="submenu-item">
+                <span>KHS dan Nilai</span>
+                <i class="fas fa-chart-line submenu-icon"></i>
+            </a>
+            <a href="akademik/lms.html" class="submenu-item active"><span>LMS</span><i class="fas fa-chalkboard submenu-icon"></i></a>
+        </div>
+
+        <!-- Menu lainnya (link biasa) -->
+        <a href="ukt.html" class="nav-item" data-page="keuangan">
+            <i class="fas fa-coins"></i> Keuangan & UKT
+        </a>
+        <a href="layanan-surat.html" class="nav-item" data-page="surat">
+            <i class="fas fa-file-signature"></i> Layanan Surat
+        </a>
+        <a href="kuesioner.html" class="nav-item" data-page="kuesioner">
+            <i class="fas fa-clipboard-list"></i> Kuesioner
+        </a>
+        <a href="tingkat-akhir.html" class="nav-item" data-page="tingkat">
+            <i class="fas fa-hourglass-end"></i> Tingkat Akhir
+        </a>
+    </div>
+</aside>
+    <!-- Overlay untuk mobile saat sidebar terbuka -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+        <div class="top-bar">
+            <div class="left-actions">
+                <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="student-info">
+                    <i class="fas fa-id-card"></i>
+                    <span><strong>254107020064</strong> / CARLOS F.R</span>
+                </div>
+            </div>
+            <div class="right-actions">
+                <a href="message.html" class="message-icon" id="messageIcon"><i class="fas fa-envelope"></i></a>
+                <button class="theme-toggle" id="themeToggleBtn">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Welcome -->
+        <div class="welcome-card">
+            <h1><i class="fas fa-hand-wave"></i> SELAMAT DATANG, CARLOS!</h1>
+            <p>Selamat datang di dashboard SIAKAD. Pantau perkembangan akademik Anda di sini.</p>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h4>IPK Terakhir</h4>
+                    <div class="value">3.85</div>
+                </div>
+                <div class="metric-icon"><i class="fas fa-chart-line"></i></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h4>Total SKS</h4>
+                    <div class="value">80</div>
+                </div>
+                <div class="metric-icon"><i class="fas fa-book"></i></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h4>Semester</h4>
+                    <div class="value">Genap 2025/2026</div>
+                </div>
+                <div class="metric-icon"><i class="fas fa-calendar-alt"></i></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-info">
+                    <h4>Status</h4>
+                    <div class="value">AKTIF</div>
+                </div>
+                <div class="metric-icon"><i class="fas fa-check-circle"></i></div>
+            </div>
+        </div>
+
+        <!-- Aksi Cepat -->
+        <div class="section-title"><i class="fas fa-bolt"></i> Aksi Cepat</div>
+        <div class="action-grid">
+            <div class="action-card" id="krsBtn">
+                <i class="fas fa-calendar-check"></i>
+                <h4>KRS</h4>
+                <p>Lihat Kartu Rencana Studi</p>
+            </div>
+            <div class="action-card" id="absenBtn">
+                <i class="fas fa-fingerprint"></i>
+                <h4>Absen</h4>
+                <p>Lihat Absensi</p>
+            </div>
+            <div class="action-card" id="khsBtn">
+                <i class="fas fa-chart-line"></i>
+                <h4>KHS</h4>
+                <p>Lihat Kartu Hasil Studi</p>
+            </div>
+            <div class="action-card" id="lmsBtn">
+                <i class="fas fa-chalkboard"></i>
+                <h4>LMS</h4>
+                <p>Connect to LMS</p>
+            </div>
+        </div>
+
+        <!-- Jadwal Hari Ini & Pengumuman -->
+        <div class="two-col">
+            <div class="card">
+                <h3><i class="fas fa-clock"></i> Jadwal Hari ini</h3>
+                <div class="schedule-item">
+                    <div class="schedule-time">07.00 - 10.30</div>
+                    <div class="schedule-course">Rekayasa Perangkat Lunak</div>
+                    <div class="schedule-room">Ruang Teori 5</div>
+                </div>
+                <div class="schedule-item">
+                    <div class="schedule-time">07.00 - 10.30</div>
+                    <div class="schedule-course">Algoritma dan Struktur Data</div>
+                    <div class="schedule-room">Ruang Teori 3</div>
+                </div>
+                <div class="schedule-item">
+                    <div class="schedule-time">13.00 - 15.30</div>
+                    <div class="schedule-course">Pemrograman Web</div>
+                    <div class="schedule-room">Lab. Komputer 2</div>
+                </div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-bullhorn"></i> Pengumuman Kampus</h3>
+                <div class="announcement-item">
+                    <div class="announcement-date">[30 Juni]</div>
+                    <div class="announcement-title">Update Jadwal UKT Semester Ganjil 2026/2027</div>
+                    <button class="btn-link" onclick="alert('Detail pengumuman UKT.')">Lihat Detail →</button>
+                </div>
+                <div class="announcement-item">
+                    <div class="announcement-date">[30 Juni]</div>
+                    <div class="announcement-title">Batas Akhir Pengisian Kuesioner Evaluasi Dosen</div>
+                    <button class="btn-link" onclick="alert('Arahkan ke halaman kuesioner.')">Isi Sekarang →</button>
+                </div>
+                <div class="announcement-item">
+                    <div class="announcement-date">[28 Juni]</div>
+                    <div class="announcement-title">Libur Semester Genap 2025/2026</div>
+                    <button class="btn-link" onclick="alert('Informasi lebih lanjut.')">Baca →</button>
+                </div>
+            </div>
+        </div>
+        <footer>© 2025 SIAKAD POLINEMA | Politeknik Negeri Malang</footer>
+    </main>
+</div>
+
+<script>
+    (function() {
+       // DARK MODE (Menggunakan Konsep Lampu Hidup / Lampu Mati)
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        const icon = toggleBtn.querySelector('i');
+        const saved = localStorage.getItem('theme');
+
+        // Jika user berada di mode gelap, tampilkan icon lampu menyala (fas) untuk beralih ke terang
+        if (saved === 'dark') { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; // Lampu Hidup (Solid)
+        } 
+        else if (saved === 'light') { 
+            document.body.classList.remove('dark'); 
+            icon.className = 'far fa-lightbulb'; // Lampu Mati (Outline)
+        } 
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; 
+            localStorage.setItem('theme', 'dark'); 
+        } 
+        else { 
+            document.body.classList.remove('dark');
+            icon.className = 'far fa-lightbulb';
+            localStorage.setItem('theme', 'light'); 
+        }
+
+        // Aksi ketika tombol diklik
+        toggleBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark')) { 
+                // Berubah ke Mode Terang
+                document.body.classList.remove('dark'); 
+                icon.className = 'far fa-lightbulb'; // Sakelar dimatikan -> Lampu Mati (Outline)
+                localStorage.setItem('theme', 'light'); 
+            } else { 
+                // Berubah ke Mode Gelap
+                document.body.classList.add('dark'); 
+                icon.className = 'fas fa-lightbulb'; // Sakelar dinyalakan -> Lampu Hidup (Solid)
+                localStorage.setItem('theme', 'dark'); 
+            }
+        });
+
+        // ========== MOBILE SIDEBAR TOGGLE ==========
+        const hamburger = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+        function openSidebar() {
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+        }
+        hamburger.addEventListener('click', () => {
+            if (sidebar.classList.contains('open')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+        overlay.addEventListener('click', closeSidebar);
+        // tutup sidebar jika resize ke desktop (lebar >768px)
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+
+        // ========== SEARCH MENU ==========
+        const searchInput = document.getElementById('menuSearch');
+        const navItems = document.querySelectorAll('.nav-item');
+        function filterMenu() {
+            const keyword = searchInput.value.toLowerCase().trim();
+            navItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (keyword === '' || text.includes(keyword)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+        searchInput.addEventListener('input', filterMenu);
+
+        // ========== SIDEBAR NAVIGASI SIMULASI ==========
+    
+
+        // ========== AKSI CEPAT ==========
+        document.getElementById('krsBtn').addEventListener('click', () => alert("Mengarahkan ke halaman KRS."));
+        document.getElementById('absenBtn').addEventListener('click', () => alert("Mengarahkan ke halaman Presensi."));
+        document.getElementById('khsBtn').addEventListener('click', () => alert("Mengarahkan ke halaman KHS / Nilai."));
+        document.getElementById('lmsBtn').addEventListener('click', () => alert("Terhubung ke LMS Polinema."));
+
+        // ========== MESSAGE ICON ==========
+        // Catatan: pastikan file message.html ada di folder yang sama
+        const messageIcon = document.getElementById('messageIcon');
+        messageIcon.addEventListener('click', (e) => {
+            // jika ingin navigasi ke message.html, biarkan href bekerja
+            // tapi karena kita pakai link, sudah otomatis
+        });
+        
+       // ACCORDION UNTUK SEMUA SUBMENU (Sekarang tertutup secara default)
+        document.querySelectorAll('.has-submenu').forEach(parent => {
+            const submenu = parent.nextElementSibling;
+            const chevron = parent.querySelector('.chevron');
+            if (!submenu || !submenu.classList.contains('submenu-group') || !chevron) return;
+            
+            // MENGUBAH DEFAULT: Semula 'flex' (terbuka) diubah menjadi 'none' (tertutup)
+            submenu.style.display = 'none';
+            chevron.classList.remove('rotated');
+            
+            parent.addEventListener('click', (e) => {
+                if (e.target.closest('.submenu-item')) return;
+                
+                // Memeriksa status apakah sedang tertutup atau terbuka
+                if (submenu.style.display === 'flex') {
+                    submenu.style.display = 'none';
+                    chevron.classList.remove('rotated');
+                } else {
+                    submenu.style.display = 'flex';
+                    chevron.classList.add('rotated');
+                }
+            });
+        });
+        // ========== SET ACTIVE MENU BERDASARKAN URL ==========
+        const currentPage = window.location.pathname.split('/').pop();
+        // Hapus semua class active dari nav-item dan submenu-item
+        document.querySelectorAll('.nav-item, .submenu-item').forEach(el => {
+            el.classList.remove('active');
+        });
+        // Cari link yang href-nya cocok dengan current page
+        const activeLink = document.querySelector(`.nav-item[href="${currentPage}"], .submenu-item[href="${currentPage}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+            // Jika yang aktif adalah submenu, buka parent submenu-nya
+            if (activeLink.classList.contains('submenu-item')) {
+                const parentSubmenu = activeLink.closest('.submenu-group');
+                if (parentSubmenu) {
+                    parentSubmenu.style.display = 'flex';
+                    const parentItem = parentSubmenu.previousElementSibling;
+                    if (parentItem && parentItem.classList.contains('has-submenu')) {
+                        const chevron = parentItem.querySelector('.chevron');
+                        if (chevron) chevron.classList.add('rotated');
+                    }
+                }
+            }
+        }
+        // Jika tidak ada link yang cocok (misal halaman dashboard), fallback ke menu Dashboard
+        if (!activeLink && currentPage === 'dashboard.html') {
+            const dashLink = document.querySelector('.nav-item[href="dashboard.html"]');
+            if (dashLink) dashLink.classList.add('active');
+        }
+    })();
+</script>
+</body>
+</html>

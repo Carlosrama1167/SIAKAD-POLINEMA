@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SIAKAD POLINEMA | Biodata Mahasiswa</title>
+    <link rel="icon" type="image/x-icon" href="../logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f4f7fc; color: #1e293b; transition: background 0.3s, color 0.2s; }
+        body.dark { background: #0f172a; color: #f1f5f9; }
+        .dashboard { display: flex; min-height: 100vh; position: relative; }
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px; background: white; border-right: 1px solid #e2e8f0; padding: 1.5rem 1rem;
+            position: sticky; top: 0; height: 100vh; overflow-y: auto; transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); z-index: 100;
+        }
+        body.dark .sidebar { background: #1e293b; border-right-color: #334155; }
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: -280px; top: 0; height: 100vh; z-index: 1000; transition: left 0.3s; }
+            .sidebar.open { left: 0; }
+            .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
+            .sidebar-overlay.active { display: block; }
+        }
+        .logo-area { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
+        body.dark .logo-area { border-bottom-color: #334155; }
+        .logo-icon { background: #1e5a7d; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem; }
+        .logo-text h2 { font-size: 1.3rem; font-weight: 700; color: #1e5a7d; }
+        body.dark .logo-text h2 { color: #2c7aa3; }
+        .logo-text p { font-size: 0.7rem; color: #475569; }
+        .search-menu { margin-bottom: 1.5rem; position: relative; }
+        .search-menu input { width: 100%; padding: 0.6rem 1rem 0.6rem 2.2rem; border-radius: 2rem; border: 1px solid #e2e8f0; background: #f8fafc; font-size: 0.8rem; }
+        body.dark .search-menu input { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+        .search-menu i { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+        .nav-menu { display: flex; flex-direction: column; gap: 0.5rem; }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.8rem; padding: 0.7rem 1rem; border-radius: 12px;
+            color: #475569; font-weight: 500; transition: all 0.2s; cursor: pointer; text-decoration: none;
+        }
+        body.dark .nav-item { color: #cbd5e1; }
+        .nav-item i { width: 24px; font-size: 1.1rem; }
+        .nav-item.active, .nav-item:hover { background: #eef2ff; color: #1e5a7d; }
+        body.dark .nav-item.active, body.dark .nav-item:hover { background: #2d3a4e; color: #3b82f6; }
+        /* Submenu */
+        .submenu-group {
+            margin-left: 1.8rem; margin-top: 0.3rem; margin-bottom: 0.3rem;
+            display: flex; flex-direction: column; gap: 0.3rem;
+        }
+        .submenu-item {
+            padding: 0.5rem 0.8rem; border-radius: 10px; font-size: 0.85rem; cursor: pointer;
+            color: #475569; transition: 0.2s; display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none;
+        }
+        body.dark .submenu-item { color: #cbd5e1; }
+        .submenu-item:hover, .submenu-item.active { background: #eef2ff; color: #1e5a7d; }
+        body.dark .submenu-item:hover, body.dark .submenu-item.active { background: #2d3a4e; color: #60a5fa; }
+        .submenu-icon { font-size: 0.8rem; opacity: 0.7; }
+        .chevron { margin-left: auto; transition: transform 0.2s; }
+        .chevron.rotated { transform: rotate(180deg); }
+        .nav-item.hidden, .submenu-item.hidden { display: none; }
+
+        /* MAIN */
+        .main { flex: 1; padding: 1.5rem 2rem; overflow-x: auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+        .left-actions { display: flex; align-items: center; gap: 1rem; }
+        .hamburger { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #1e293b; }
+        body.dark .hamburger { color: #f1f5f9; }
+        @media (max-width: 768px) { .hamburger { display: block; } }
+        .student-info { background: white; padding: 0.5rem 1.2rem; border-radius: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); display: inline-flex; align-items: center; gap: 0.8rem; }
+        body.dark .student-info { background: #1e293b; }
+        .student-info i { color: #1e5a7d; }
+        .right-actions { display: flex; align-items: center; gap: 0.8rem; }
+        .message-icon, .theme-toggle { background: #e2e8f0; border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; color: #1e293b; text-decoration: none; }
+        body.dark .message-icon, body.dark .theme-toggle { background: #334155; color: #f1f5f9; }
+
+        /* Tab navigasi antar halaman */
+        .nav-tabs {
+            display: flex; gap: 1rem; background: white; border-radius: 2rem; padding: 0.3rem;
+            margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); width: fit-content;
+        }
+        body.dark .nav-tabs { background: #1e293b; }
+        .tab-link {
+            padding: 0.6rem 1.2rem; border-radius: 2rem; text-decoration: none; font-weight: 600;
+            font-size: 0.85rem; transition: 0.2s; color: #64748b;
+        }
+        body.dark .tab-link { color: #94a3b8; }
+        .tab-link.active { background: #1e5a7d; color: white; }
+        body.dark .tab-link.active { background: #3b82f6; color: white; }
+        .tab-link:hover:not(.active) { background: #e2e8f0; }
+
+        /* Card biodata */
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+        .card { background: white; border-radius: 1.2rem; padding: 1.2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        body.dark .card { background: #1e293b; }
+        .card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; color: #1e5a7d; }
+        .info-row { display: flex; margin-bottom: 0.6rem; font-size: 0.85rem; }
+        .info-label { width: 110px; font-weight: 600; color: #475569; }
+        body.dark .info-label { color: #94a3b8; }
+        .info-value { flex: 1; }
+        footer { text-align: center; font-size: 0.7rem; color: #64748b; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; }
+        body.dark footer { border-top-color: #334155; color: #94a3b8; }
+        @media (max-width: 600px) {
+            .main { padding: 1rem; }
+            .info-row { flex-direction: column; }
+            .info-label { width: auto; margin-bottom: 0.2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="logo-text"><h2>SIAKAD</h2><p>Politeknik Negeri Malang</p></div>
+        </div>
+        <div class="search-menu"><i class="fas fa-search"></i><input type="text" id="menuSearch" placeholder="Cari menu..."></div>
+        <div class="nav-menu" id="navMenu">
+            <!-- Dashboard -->
+            <a href="../dasboard.html" class="nav-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+
+            <!-- Profil & KTM (dengan submenu) -->
+            <div class="nav-item has-submenu">
+                <i class="fas fa-id-card"></i> Profil & KTM
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+            <div class="submenu-group">
+                <a href="biodata.html" class="submenu-item active"><span>Biodata</span><i class="fas fa-user submenu-icon"></i></a>
+                <a href="ktm.html" class="submenu-item"><span>KTM</span><i class="fas fa-id-card submenu-icon"></i></a>
+                <a href="dokumen.html" class="submenu-item"><span>Dokumen</span><i class="fas fa-file-alt submenu-icon"></i></a>
+            </div>
+
+            <!-- Akademik (dengan submenu) -->
+            <div class="nav-item has-submenu">
+                <i class="fas fa-book-open"></i> Akademik
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+            <div class="submenu-group">
+                <a href="../akademik/jadwal-absen.html" class="submenu-item"><span>Jadwal dan Absen</span><i class="fas fa-calendar-alt submenu-icon"></i></a>
+                <a href="../akademik/krs-online.html" class="submenu-item"><span>KRS Online</span><i class="fas fa-calendar-check submenu-icon"></i></a>
+                <a href="../akademik/khs-nilai.html" class="submenu-item"><span>KHS dan Nilai</span><i class="fas fa-chart-line submenu-icon"></i></a>
+                <a href="../akademik/lms.html" class="submenu-item"><span>LMS</span><i class="fas fa-chalkboard submenu-icon"></i></a>
+            </div>
+
+            <a href="../ukt.html" class="nav-item"><i class="fas fa-coins"></i> Keuangan & UKT</a>
+            <a href="../layanan-surat.html" class="nav-item"><i class="fas fa-file-signature"></i> Layanan Surat</a>
+            <a href="../kuesioner.html" class="nav-item"><i class="fas fa-clipboard-list"></i> Kuesioner</a>
+            <a href="../tingkat-akhir.html" class="nav-item"><i class="fas fa-hourglass-end"></i> Tingkat Akhir</a>
+        </div>
+    </aside>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <main class="main">
+        <div class="top-bar">
+            <div class="left-actions">
+                <button class="hamburger" id="hamburgerBtn"><i class="fas fa-bars"></i></button>
+                <div class="student-info"><i class="fas fa-id-card"></i><span><strong>254107020064</strong> / CARLOS F.R</span></div>
+            </div>
+            <div class="right-actions">
+                <a href="message.html" class="message-icon"><i class="fas fa-envelope"></i></a>
+                <button class="theme-toggle" id="themeToggleBtn"><i class="fas fa-moon"></i></button>
+            </div>
+        </div>
+
+        <!-- TABS NAVIGASI KE HALAMAN BIODATA, KTM, DOKUMEN -->
+        <div class="nav-tabs">
+            <a href="biodata.html" class="tab-link active">Biodata</a>
+            <a href="ktm.html" class="tab-link">KTM</a>
+            <a href="dokumen.html" class="tab-link">Dokumen</a>
+        </div>
+
+        <!-- KONTEN BIODATA -->
+        <div class="info-grid">
+            <div class="card">
+                <h3><i class="fas fa-user-circle"></i> Data Diri Utama</h3>
+                <div class="info-row"><div class="info-label">NIK</div><div class="info-value">3310131106070002</div></div>
+                <div class="info-row"><div class="info-label">Tempat, Tanggal Lahir</div><div class="info-value">Klaten, 11 Juni 2007</div></div>
+                <div class="info-row"><div class="info-label">Agama</div><div class="info-value">Islam</div></div>
+                <div class="info-row"><div class="info-label">Gol. Darah</div><div class="info-value">B</div></div>
+                <div class="info-row"><div class="info-label">Anak Ke</div><div class="info-value">1 dari 2 bersaudara</div></div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-family"></i> Data Keluarga & Domisili</h3>
+                <div class="info-row"><div class="info-label">Ayah</div><div class="info-value">Supriyanto (NIK: 3310130201760001)</div></div>
+                <div class="info-row"><div class="info-label">Ibu</div><div class="info-value">Sri Wahyuni</div></div>
+                <div class="info-row"><div class="info-label">Wali</div><div class="info-value">Sri Wahyuni</div></div>
+                <div class="info-row"><div class="info-label">Alamat</div><div class="info-value">Dawetan, RT 2/RW 1, Ngolodono, Kec. Karangdowo, Kab. Klaten</div></div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-school"></i> Data Pendidikan Asal</h3>
+                <div class="info-row"><div class="info-label">Sekolah asal</div><div class="info-value">SMK Al Firdaus Karangploso</div></div>
+                <div class="info-row"><div class="info-label">Jurusan Asal</div><div class="info-value">Teknik Komputer dan Jaringan (TKJ)</div></div>
+                <div class="info-row"><div class="info-label">NISN</div><div class="info-value">0077397216</div></div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-phone-alt"></i> Kontak Utama</h3>
+                <div class="info-row"><div class="info-label">No. Telepon</div><div class="info-value">0831-3833-9951</div></div>
+                <div class="info-row"><div class="info-label">Email</div><div class="info-value">carlosrama1167@gmail.com</div></div>
+            </div>
+        </div>
+        <footer>© 2025 SIAKAD POLINEMA | Politeknik Negeri Malang</footer>
+    </main>
+</div>
+
+<script>
+    (function() {
+        // DARK MODE (Menggunakan Konsep Lampu Hidup / Lampu Mati)
+        const toggleBtn = document.getElementById('themeToggleBtn');
+        const icon = toggleBtn.querySelector('i');
+        const saved = localStorage.getItem('theme');
+
+        // Jika user berada di mode gelap, tampilkan icon lampu menyala (fas) untuk beralih ke terang
+        if (saved === 'dark') { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; // Lampu Hidup (Solid)
+        } 
+        else if (saved === 'light') { 
+            document.body.classList.remove('dark'); 
+            icon.className = 'far fa-lightbulb'; // Lampu Mati (Outline)
+        } 
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) { 
+            document.body.classList.add('dark'); 
+            icon.className = 'fas fa-lightbulb'; 
+            localStorage.setItem('theme', 'dark'); 
+        } 
+        else { 
+            document.body.classList.remove('dark');
+            icon.className = 'far fa-lightbulb';
+            localStorage.setItem('theme', 'light'); 
+        }
+
+        // Aksi ketika tombol diklik
+        toggleBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark')) { 
+                // Berubah ke Mode Terang
+                document.body.classList.remove('dark'); 
+                icon.className = 'far fa-lightbulb'; // Sakelar dimatikan -> Lampu Mati (Outline)
+                localStorage.setItem('theme', 'light'); 
+            } else { 
+                // Berubah ke Mode Gelap
+                document.body.classList.add('dark'); 
+                icon.className = 'fas fa-lightbulb'; // Sakelar dinyalakan -> Lampu Hidup (Solid)
+                localStorage.setItem('theme', 'dark'); 
+            }
+        });
+
+        // MOBILE SIDEBAR
+        const hamburger = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
+        function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); }
+        hamburger.addEventListener('click', () => { if (sidebar.classList.contains('open')) closeSidebar(); else openSidebar(); });
+        overlay.addEventListener('click', closeSidebar);
+        window.addEventListener('resize', () => { if (window.innerWidth > 768) closeSidebar(); });
+
+        // SEARCH MENU (termasuk submenu)
+        const searchInput = document.getElementById('menuSearch');
+        const allMenuItems = document.querySelectorAll('.nav-item, .submenu-item');
+        searchInput.addEventListener('input', () => {
+            const kw = searchInput.value.toLowerCase().trim();
+            allMenuItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (kw === '' || text.includes(kw)) item.classList.remove('hidden');
+                else item.classList.add('hidden');
+            });
+        });
+
+       // ACCORDION UNTUK SEMUA SUBMENU (Terbuka otomatis hanya jika ada menu aktif di dalamnya)
+document.querySelectorAll('.has-submenu').forEach(parent => {
+    const submenu = parent.nextElementSibling;
+    const chevron = parent.querySelector('.chevron');
+    if (!submenu || !submenu.classList.contains('submenu-group') || !chevron) return;
+    
+    // 1. Cek apakah di dalam submenu ini ada item yang sedang aktif (.active)
+    const hasActiveChild = submenu.querySelector('.submenu-item.active');
+    
+    if (hasActiveChild) {
+        // Jika ada item aktif, biarkan menu ini terbuka saat halaman dimuat
+        submenu.style.display = 'flex';
+        chevron.classList.add('rotated');
+        parent.classList.add('active'); // Membuat teks menu induk ikut menyala
+    } else {
+        // Jika tidak ada item aktif, sembunyikan secara default agar tidak memanjang
+        submenu.style.display = 'none';
+        chevron.classList.remove('rotated');
+    }
+    
+    // 2. Logika ketika menu induk diklik manual oleh user
+    parent.addEventListener('click', (e) => {
+        if (e.target.closest('.submenu-item')) return;
+        
+        if (submenu.style.display === 'flex') {
+            submenu.style.display = 'none';
+            chevron.classList.remove('rotated');
+        } else {
+            submenu.style.display = 'flex';
+            chevron.classList.add('rotated');
+        }
+    });
+});
+
+// HAPUS atau KOMENTARI baris kode lama ini di bawahnya agar tidak bentrok:
+// const profilNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.innerText.includes('Profil & KTM'));
+// if (profilNav) profilNav.classList.add('active');
+
+        // AKTIFKAN MENU "Profil & KTM" DI SIDEBAR KARENA HALAMAN INI BAGIAN DARI PROFIL
+        const profilNav = Array.from(document.querySelectorAll('.nav-item')).find(n => n.innerText.includes('Profil & KTM'));
+        if (profilNav) profilNav.classList.add('active');
+    })();
+</script>
+</body>
+</html>
