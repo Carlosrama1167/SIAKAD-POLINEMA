@@ -292,7 +292,7 @@
             parent.addEventListener('click', (e) => {
                 if (e.target.closest('.submenu-item')) return;
                 
-                // Memeriksa status apakah sedang tertutup atau terbuka
+                // Memeriksa status apakah sedang tertutup atau terbuka,
                 if (submenu.style.display === 'flex') {
                     submenu.style.display = 'none';
                     chevron.classList.remove('rotated');
