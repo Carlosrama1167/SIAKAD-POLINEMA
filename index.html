@@ -409,6 +409,9 @@
             transition: 0.2s;
             cursor: pointer;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
 
         body.dark .action-card {
@@ -516,6 +519,8 @@
             font-size: 0.7rem;
             cursor: pointer;
             margin-top: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
         }
 
         body.dark .btn-link {
@@ -618,79 +623,79 @@
 <div class="dashboard">
     <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-    <div class="logo-area">
-        <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="logo-text">
-            <h2>SIAKAD</h2>
-            <p>Politeknik Negeri Malang</p>
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+            <div class="logo-text">
+                <h2>SIAKAD</h2>
+                <p>Politeknik Negeri Malang</p>
+            </div>
         </div>
-    </div>
-    <div class="search-menu">
-        <i class="fas fa-search"></i>
-        <input type="text" id="menuSearch" placeholder="Cari menu...">
-    </div>
-    <div class="nav-menu" id="navMenu">
-        <!-- Dashboard (link) -->
-        <a href="index.html" class="nav-item" data-page="dashboard">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
-        </a>
+        <div class="search-menu">
+            <i class="fas fa-search"></i>
+            <input type="text" id="menuSearch" placeholder="Cari menu...">
+        </div>
+        <div class="nav-menu" id="navMenu">
+            <!-- Dashboard (link) -->
+            <a href="index.html" class="nav-item" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
 
-        <!-- Menu Profil & KTM (dengan submenu) -->
-        <div class="nav-item has-submenu" data-page="profil" id="profilParent">
-            <i class="fas fa-id-card"></i> Profil & KTM
-            <i class="fas fa-chevron-down chevron" id="profilChevron"></i>
-        </div>
-        <div class="submenu-group" id="profilSubmenu">
-            <a href="profil-ktm/biodata.html" class="submenu-item">
-                <span>Biodata</span>
-                <i class="fas fa-user submenu-icon"></i>
-            </a>
-            <a href="profil-ktm/ktm.html" class="submenu-item">
-                <span>KTM</span>
-                <i class="fas fa-id-card submenu-icon"></i>
-            </a>
-            <a href="profil-ktm/dokumen.html" class="submenu-item">
-                <span>Dokumen</span>
-                <i class="fas fa-file-alt submenu-icon"></i>
-            </a>
-        </div>
+            <!-- Menu Profil & KTM (dengan submenu) -->
+            <div class="nav-item has-submenu" data-page="profil" id="profilParent">
+                <i class="fas fa-id-card"></i> Profil & KTM
+                <i class="fas fa-chevron-down chevron" id="profilChevron"></i>
+            </div>
+            <div class="submenu-group" id="profilSubmenu">
+                <a href="profil-ktm/biodata.html" class="submenu-item">
+                    <span>Biodata</span>
+                    <i class="fas fa-user submenu-icon"></i>
+                </a>
+                <a href="profil-ktm/ktm.html" class="submenu-item">
+                    <span>KTM</span>
+                    <i class="fas fa-id-card submenu-icon"></i>
+                </a>
+                <a href="profil-ktm/dokumen.html" class="submenu-item">
+                    <span>Dokumen</span>
+                    <i class="fas fa-file-alt submenu-icon"></i>
+                </a>
+            </div>
 
-        <!-- Menu Akademik (dengan submenu) -->
-        <div class="nav-item has-submenu" data-page="akademik" id="akademikParent">
-            <i class="fas fa-book-open"></i> Akademik
-            <i class="fas fa-chevron-down chevron" id="akademikChevron"></i>
-        </div>
-        <div class="submenu-group" id="akademikSubmenu">
-            <a href="akademik/jadwal-absen.html" class="submenu-item">
-                <span>Jadwal dan Absen</span>
-                <i class="fas fa-calendar-alt submenu-icon"></i>
-            </a>
-            <a href="akademik/krs-online.html" class="submenu-item">
-                <span>KRS Online</span>
-                <i class="fas fa-calendar-check submenu-icon"></i>
-            </a>
-            <a href="akademik/khs-nilai.html" class="submenu-item">
-                <span>KHS dan Nilai</span>
-                <i class="fas fa-chart-line submenu-icon"></i>
-            </a>
-            <a href="akademik/lms.html" class="submenu-item active"><span>LMS</span><i class="fas fa-chalkboard submenu-icon"></i></a>
-        </div>
+            <!-- Menu Akademik (dengan submenu) -->
+            <div class="nav-item has-submenu" data-page="akademik" id="akademikParent">
+                <i class="fas fa-book-open"></i> Akademik
+                <i class="fas fa-chevron-down chevron" id="akademikChevron"></i>
+            </div>
+            <div class="submenu-group" id="akademikSubmenu">
+                <a href="akademik/jadwal-absen.html" class="submenu-item">
+                    <span>Jadwal dan Absen</span>
+                    <i class="fas fa-calendar-alt submenu-icon"></i>
+                </a>
+                <a href="akademik/krs-online.html" class="submenu-item">
+                    <span>KRS Online</span>
+                    <i class="fas fa-calendar-check submenu-icon"></i>
+                </a>
+                <a href="akademik/khs-nilai.html" class="submenu-item">
+                    <span>KHS dan Nilai</span>
+                    <i class="fas fa-chart-line submenu-icon"></i>
+                </a>
+                <a href="akademik/lms.html" class="submenu-item active"><span>LMS</span><i class="fas fa-chalkboard submenu-icon"></i></a>
+            </div>
 
-        <!-- Menu lainnya (link biasa) -->
-        <a href="ukt.html" class="nav-item" data-page="keuangan">
-            <i class="fas fa-coins"></i> Keuangan & UKT
-        </a>
-        <a href="layanan-surat.html" class="nav-item" data-page="surat">
-            <i class="fas fa-file-signature"></i> Layanan Surat
-        </a>
-        <a href="kuesioner.html" class="nav-item" data-page="kuesioner">
-            <i class="fas fa-clipboard-list"></i> Kuesioner
-        </a>
-        <a href="tingkat-akhir.html" class="nav-item" data-page="tingkat">
-            <i class="fas fa-hourglass-end"></i> Tingkat Akhir
-        </a>
-    </div>
-</aside>
+            <!-- Menu lainnya (link biasa) -->
+            <a href="ukt.html" class="nav-item" data-page="keuangan">
+                <i class="fas fa-coins"></i> Keuangan & UKT
+            </a>
+            <a href="layanan-surat.html" class="nav-item" data-page="surat">
+                <i class="fas fa-file-signature"></i> Layanan Surat
+            </a>
+            <a href="kuesioner.html" class="nav-item" data-page="kuesioner">
+                <i class="fas fa-clipboard-list"></i> Kuesioner
+            </a>
+            <a href="tingkat-akhir.html" class="nav-item" data-page="tingkat">
+                <i class="fas fa-hourglass-end"></i> Tingkat Akhir
+            </a>
+        </div>
+    </aside>
     <!-- Overlay untuk mobile saat sidebar terbuka -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -753,30 +758,30 @@
         <!-- Aksi Cepat -->
         <div class="section-title"><i class="fas fa-bolt"></i> Aksi Cepat</div>
         <div class="action-grid">
-            <div class="action-card" id="krsBtn">
+            <!-- KRS -->
+            <a href="akademik/krs-online.html" class="action-card" id="krsBtn">
                 <i class="fas fa-calendar-check"></i>
-                <a href="akademik/krs-online.html" style="text-decoration: none; color: inherit;"></a>
                 <h4>KRS</h4>
                 <p>Lihat Kartu Rencana Studi</p>
-            </div>
-            <div class="action-card" id="absenBtn">
+            </a>
+            <!-- Absen -->
+            <a href="akademik/jadwal-absen.html" class="action-card" id="absenBtn">
                 <i class="fas fa-fingerprint"></i>
-                <a href="akademik/jadwal-absen.html" style="text-decoration: none; color: inherit;"> </a>
                 <h4>Absen</h4>
                 <p>Lihat Absensi</p>
-            </div>
-            <div class="action-card" id="khsBtn">
+            </a>
+            <!-- KHS -->
+            <a href="akademik/khs-nilai.html" class="action-card" id="khsBtn">
                 <i class="fas fa-chart-line"></i>
-                <a href="akademik/khs-nilai.html" style="text-decoration: none; color: inherit;"> </a>
                 <h4>KHS</h4>
                 <p>Lihat Kartu Hasil Studi</p>
-            </div>
-            <div class="action-card" id="lmsBtn">
+            </a>
+            <!-- LMS -->
+            <a href="akademik/lms.html" class="action-card" id="lmsBtn">
                 <i class="fas fa-chalkboard"></i>
-                <a href="akademik/lms.html" style="text-decoration: none; color: inherit;"></a>
                 <h4>LMS</h4>
                 <p>Connect to LMS</p>
-            </div>
+            </a>
         </div>
 
         <!-- Jadwal Hari Ini & Pengumuman -->
@@ -804,17 +809,17 @@
                 <div class="announcement-item">
                     <div class="announcement-date">[30 Juni]</div>
                     <div class="announcement-title">Update Jadwal UKT Semester Ganjil 2026/2027</div>
-                    <button class="btn-link" onclick="alert('Detail pengumuman UKT.')">Lihat Detail →</button>
+                    <a href="#" class="btn-link">Lihat Detail →</a>
                 </div>
                 <div class="announcement-item">
                     <div class="announcement-date">[30 Juni]</div>
                     <div class="announcement-title">Batas Akhir Pengisian Kuesioner Evaluasi Dosen</div>
-                    <button class="btn-link" onclick="alert('Arahkan ke halaman kuesioner.')">Isi Sekarang →</button>
+                    <a href="kuesioner.html" class="btn-link">Isi Sekarang →</a>
                 </div>
                 <div class="announcement-item">
                     <div class="announcement-date">[28 Juni]</div>
                     <div class="announcement-title">Libur Semester Genap 2025/2026</div>
-                    <button class="btn-link" onclick="alert('Informasi lebih lanjut.')">Baca →</button>
+                    <a href="#" class="btn-link">Baca →</a>
                 </div>
             </div>
         </div>
@@ -907,14 +912,10 @@
         }
         searchInput.addEventListener('input', filterMenu);
 
-        // ========== SIDEBAR NAVIGASI SIMULASI ==========
-    
         // ========== MESSAGE ICON ==========
-        // Catatan: pastikan file message.html ada di folder yang sama
         const messageIcon = document.getElementById('messageIcon');
         messageIcon.addEventListener('click', (e) => {
-            // jika ingin navigasi ke message.html, biarkan href bekerja
-            // tapi karena kita pakai link, sudah otomatis
+            // biarkan href bekerja
         });
         
        // ACCORDION UNTUK SEMUA SUBMENU (Sekarang tertutup secara default)
